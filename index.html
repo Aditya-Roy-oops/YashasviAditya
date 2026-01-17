@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yashasvi Aditya | Author</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600&family=Nothing+You+Could+Do&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                        handwriting: ['Nothing You Could Do', 'cursive'],
+                    },
+                    colors: {
+                        stone: {
+                            50: '#fafaf9',
+                            100: '#f5f5f4',
+                            200: '#e7e5e4',
+                            300: '#d6d3d1',
+                            400: '#a8a29e',
+                            500: '#78716c',
+                            600: '#57534e',
+                            800: '#292524',
+                            900: '#1c1917',
+                            950: '#0c0a09',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom 3D Utilities usually handled by Tailwind plugins, hardcoded here for reliability */
+        .perspective-1500 {
+            perspective: 1500px;
+        }
+        .transform-style-3d {
+            transform-style: preserve-3d;
+        }
+        .backface-hidden {
+            backface-visibility: hidden;
+        }
+        .rotate-y-90 {
+            transform: rotateY(90deg);
+        }
+        
+        /* Book Hover Animation */
+        .book-container:hover .book-inner {
+            transform: rotateY(-25deg) rotateX(10deg);
+        }
+        .book-shadow {
+            transition: all 0.7s;
+        }
+        .book-container:hover .book-shadow {
+            transform: scale(1.1);
+            opacity: 0.5;
+        }
+
+        /* Utility for 3D positioning */
+        .translate-z-neg-2 { transform: translateZ(-2px) rotateY(90deg); transform-origin: right; }
+        .translate-z-neg-35 { transform: translateZ(-35px); }
+        
+        /* Smooth fade for quote slider */
+        .fade-enter {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        .fade-enter-active {
+            opacity: 1;
+            transform: translateY(0);
+            transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+        }
+    </style>
+</head>
+<body class="bg-stone-50 text-stone-800 selection:bg-stone-800 selection:text-white antialiased">
+
+    <!-- Mobile Menu Toggle -->
+    <div class="fixed top-4 right-4 z-50 md:hidden">
+        <button id="mobile-menu-btn" class="p-2 bg-stone-900 text-white rounded-full shadow-lg transition-transform hover:scale-105">
+            <i data-lucide="menu" id="menu-icon"></i>
+        </button>
+    </div>
+
+    <!-- Navigation -->
+    <div id="navbar-container" class="fixed top-6 left-0 right-0 z-40 flex justify-center w-full px-4 transition-transform duration-300 -translate-y-full md:translate-y-0">
+        <nav class="bg-white/90 backdrop-blur-md border border-stone-200 shadow-2xl rounded-full px-8 py-4 flex justify-between items-center w-full max-w-2xl">
+            <ul class="flex flex-col md:flex-row justify-between w-full text-center md:text-left text-sm md:text-base font-medium text-stone-600 gap-4 md:gap-0">
+                <li><a href="#story" class="nav-link hover:text-stone-900 transition-colors uppercase tracking-widest text-xs font-bold block py-2 md:py-0">My Story</a></li>
+                <li><a href="#book" class="nav-link hover:text-stone-900 transition-colors uppercase tracking-widest text-xs font-bold block py-2 md:py-0">The Book</a></li>
+                <li class="hidden md:block text-stone-400 font-serif font-bold tracking-widest">Y.A.</li>
+                <li><a href="#upcoming" class="nav-link hover:text-stone-900 transition-colors uppercase tracking-widest text-xs font-bold block py-2 md:py-0">Upcoming</a></li>
+                <li><a href="#contact" class="nav-link hover:text-stone-900 transition-colors uppercase tracking-widest text-xs font-bold block py-2 md:py-0">Contact</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <!-- Section 1: Hero -->
+    <section id="home" class="min-h-screen flex items-center pt-24 md:pt-0 relative overflow-hidden">
+        <!-- Background Decorative -->
+        <div class="absolute top-0 right-0 w-1/2 h-full bg-stone-100/50 -skew-x-12 translate-x-32 -z-10 hidden md:block"></div>
+
+        <div class="container mx-auto px-6 md:px-12">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+                
+                <!-- Left: Quote Slider -->
+                <div class="order-2 md:order-1 flex flex-col justify-center h-full relative z-10">
+                    <div class="mb-6 relative">
+                        <span class="text-8xl text-stone-200 font-serif leading-none absolute -top-10 -left-6 z-[-1]">“</span>
+                    </div>
+                    <div class="min-h-[200px] flex flex-col justify-center">
+                        <p id="quote-text" class="text-xl md:text-3xl font-serif text-stone-800 leading-snug italic fade-enter-active">
+                            Reading is an act of civilization; it takes the free raw material of the mind and builds castles of possibilities.
+                        </p>
+                        <p id="quote-author" class="mt-4 text-xs font-bold tracking-widest text-stone-400 uppercase fade-enter-active">— Ben Okri</p>
+                    </div>
+                    <div class="flex gap-2 mt-8" id="quote-dots">
+                        <!-- Dots generated by JS -->
+                    </div>
+                </div>
+                
+                <!-- Right: Abstract/Book Image -->
+                <div class="order-1 md:order-2 flex justify-center md:justify-end relative group">
+                    <div class="relative">
+                        <div class="absolute inset-0 bg-stone-200 translate-x-4 translate-y-4 -z-10 rounded-sm transition-transform duration-500 group-hover:translate-x-2 group-hover:translate-y-2"></div>
+                        <img 
+                            src="bookview.jpg" 
+                            alt="Aesthetic Book View" 
+                            class="w-full max-w-md object-cover rounded-sm shadow-lg grayscale group-hover:grayscale-0 transition-all duration-700 ease-in-out"
+                            onerror="this.src='https://images.unsplash.com/photo-1481627834876-b7833e8f5570?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'"
+                        >
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 2: My Story -->
+    <section id="story" class="py-24 md:py-32 bg-white relative">
+        <div class="container mx-auto px-6 md:px-12">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-20 items-center">
+                
+                <!-- Left: Image -->
+                <div class="relative mx-auto md:mx-0 max-w-md">
+                    <div class="absolute -inset-4 border border-stone-200 rounded-full md:rounded-tl-[100px] md:rounded-br-[100px] -z-10"></div>
+                    <img 
+                        src="BehindThePen.jpg" 
+                        alt="Yashasvi Aditya - Behind The Pen" 
+                        class="w-full h-auto object-cover rounded-tl-[80px] rounded-br-[80px] shadow-2xl filter sepia-[0.2]"
+                        onerror="this.src='https://images.unsplash.com/photo-1455390582262-044cdead277a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'"
+                    >
+                </div>
+                
+                <!-- Right: Content -->
+                <div class="space-y-8">
+                    <div>
+                        <span class="text-xs font-bold tracking-[0.3em] text-stone-400 uppercase block mb-3">About the Author</span>
+                        <h2 class="text-4xl md:text-6xl font-serif text-stone-900 leading-tight">Behind the Pen</h2>
+                    </div>
+                    
+                    <div class="prose prose-stone prose-lg text-stone-600 font-light">
+                        <p class="leading-relaxed mb-4">
+                            I am an independent author fascinated by the complexities of the human condition. Writing isn't just a hobby; it's a way of documenting the invisible threads that connect us.
+                        </p>
+                        <p class="leading-relaxed">
+                            When I am not writing literary fiction, I am exploring other genres and formats. As a self-publisher, I believe in the freedom to tell stories exactly how they wish to be told.
+                        </p>
+                    </div>
+
+                    <div class="pt-4">
+                        <p class="font-handwriting text-3xl text-stone-800 opacity-80 signing">
+                            - Yashasvi Aditya
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 3: The Book (Baa) -->
+    <section id="book" class="py-32 bg-stone-100 flex items-center relative overflow-hidden">
+        <div class="absolute inset-0 opacity-[0.03]" style="background-image: url('https://www.transparenttextures.com/patterns/cubes.png')"></div>
+
+        <div class="container mx-auto px-6 md:px-12 relative z-10">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+                
+                <!-- Left: 3D Book Mockup -->
+                <div class="flex justify-center md:justify-end md:pr-16">
+                    <div class="perspective-1500 book-container w-64 h-96 cursor-pointer mx-auto relative group">
+                        <div class="book-inner relative w-full h-full duration-700 transform-style-3d shadow-2xl transition-all ease-out">
+                            
+                            <!-- Front Cover (Image) -->
+                            <div class="absolute inset-0 z-20 backface-hidden rounded-r-sm shadow-inner border-l-2 border-stone-800 bg-[#2c2c2a] overflow-hidden">
+                                <img src="BaaCover.svg" alt="Baa Book Cover" class="w-full h-full object-cover" onerror="this.style.display='none'; this.parentElement.classList.add('bg-stone-800');">
+                                <!-- Overlay for texture -->
+                                <div class="absolute inset-0 bg-gradient-to-tr from-black/40 to-transparent pointer-events-none mix-blend-multiply"></div>
+                            </div>
+                    
+                            <!-- Spine -->
+                            <div class="absolute top-0 bottom-0 left-0 w-10 bg-[#1a1a19] origin-left rotate-y-90 flex items-center justify-center border-r border-white/10">
+                                <span class="text-stone-300 text-[10px] tracking-[0.3em] font-bold rotate-90 whitespace-nowrap">BAA — ADITYA</span>
+                            </div>
+                    
+                            <!-- Pages (Thickness) -->
+                            <div class="absolute top-1 bottom-1 right-0 w-10 bg-[#f5f5f0] origin-right translate-z-neg-2 shadow-sm">
+                                <div class="w-full h-full" style="background-image: repeating-linear-gradient(0deg, #e5e5e0 0px, #e5e5e0 1px, transparent 1px, transparent 4px)"></div>
+                            </div>
+                            
+                            <!-- Back Cover -->
+                            <div class="absolute inset-0 bg-[#2c2c2a] translate-z-neg-35 rounded-l-sm shadow-xl"></div>
+                        </div>
+                        
+                        <!-- Floating Shadow -->
+                        <div class="book-shadow absolute -bottom-12 left-4 right-4 h-6 bg-black/30 blur-2xl rounded-[100%]"></div>
+                    </div>
+                </div>
+                
+                <!-- Right: Product Details -->
+                <div class="space-y-8 text-center md:text-left">
+                    <div>
+                        <div class="inline-block px-3 py-1 border border-stone-300 rounded-full text-[10px] tracking-widest uppercase mb-4 text-stone-500">Available Now</div>
+                        <h2 class="text-7xl font-serif text-stone-900 mb-2">Baa</h2>
+                        <span class="text-stone-500 font-serif italic text-2xl">A literary fiction short story</span>
+                    </div>
+                    
+                    <p class="text-lg text-stone-600 leading-relaxed max-w-md mx-auto md:mx-0" style="text-align: left;">
+                        <b>Baa</b> is a quiet village story from the hills of Himachal Pradesh, following an elderly woman shaped by simple, steady routines.
+                        It explores companionship, aging and a gentle, enduring form of grief and courage.<br>
+                        Written in calm, understated prose, it’s a short reflective read meant to be taken slowly.
+                    </p>
+
+                    <div class="flex flex-col sm:flex-row gap-4 pt-6 justify-center md:justify-start">
+                        <a href="https://www.amazon.in/dp/B0GDMZD199" target="_blank" class="inline-flex items-center justify-center gap-3 bg-[#232F3E] text-white px-8 py-4 rounded-lg hover:bg-[#131921] transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-1">
+                            <i data-lucide="shopping-cart" width="18"></i>
+                            <span class="font-medium">Buy on Amazon</span>
+                        </a>
+                        <a href="https://www.goodreads.com/user/show/197081223-yashasvi-aditya" target="_blank" class="inline-flex items-center justify-center gap-3 bg-[#F4F1EA] text-[#372213] border border-[#dcd6cc] px-8 py-4 rounded-lg hover:bg-[#E9E6DC] transition-all duration-300 shadow-sm hover:shadow-md hover:-translate-y-1 group">
+                            <i data-lucide="book-open" width="18" class="group-hover:scale-110 transition-transform"></i>
+                            <span class="font-medium">Goodreads</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 4: Upcoming -->
+    <section id="upcoming" class="py-32 bg-stone-900 text-stone-300 text-center relative overflow-hidden">
+        <!-- Abstract Lines -->
+        <svg class="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none" viewBox="0 0 100 100" preserveAspectRatio="none">
+            <path d="M0 100 C 20 0 50 0 100 100 Z" fill="none" stroke="white" stroke-width="0.5" />
+            <path d="M0 100 C 50 0 80 0 100 100 Z" fill="none" stroke="white" stroke-width="0.5" />
+        </svg>
+
+        <div class="container mx-auto px-6 relative z-10 max-w-3xl">
+            <!-- Blinking Badge -->
+            <div class="inline-flex items-center gap-2 mb-8">
+                <span class="relative flex h-3 w-3">
+                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                  <span class="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+                </span>
+                <span class="text-xs font-bold tracking-[0.2em] text-stone-400 uppercase">Coming Soon</span>
+            </div>
+            
+            <h2 class="text-3xl md:text-5xl font-serif text-white mb-8 leading-tight">
+                The <span class="italic font-light text-stone-400">'Baa'</span> series continues
+            </h2>
+            
+            <div class="max-w-xl mx-auto mb-16 relative">
+                 <span class="absolute -top-6 -left-4 text-6xl text-stone-800 font-serif">“</span>
+                 <p class="text-lg md:text-xl text-stone-400 leading-relaxed font-light italic">
+                    Shadows lengthen, but stories never truly fade. The next chapter delves deeper into the ancestry, unearthing secrets buried for generations. Be prepared for a journey that transcends time.
+                </p>
+                <span class="absolute -bottom-10 -right-4 text-6xl text-stone-800 font-serif rotate-180">“</span>
+            </div>
+
+            <!-- Newsletter Card -->
+            <div class="bg-white/5 backdrop-blur-sm border border-white/10 p-8 md:p-10 rounded-2xl max-w-xl mx-auto shadow-2xl">
+                <h3 class="text-xl text-white font-medium mb-2">Be the first to know when it drops</h3>
+                <p class="text-sm text-stone-500 mb-8">Join the inner circle for exclusive previews and release dates.</p>
+                
+                <form 
+                    action="https://formspree.io/f/YOUR_FORM_ID" 
+                    method="POST"
+                    class="flex flex-col sm:flex-row gap-3"
+                >
+                    <div class="relative flex-1">
+                        <i data-lucide="mail" class="absolute left-4 top-1/2 -translate-y-1/2 text-stone-500" width="18"></i>
+                        <input 
+                            type="email" 
+                            name="email" 
+                            placeholder="your@email.com" 
+                            required
+                            class="w-full pl-12 pr-4 py-3 bg-stone-950/50 border border-stone-800 rounded-lg text-white focus:outline-none focus:border-stone-600 transition-colors placeholder-stone-600"
+                        >
+                    </div>
+                    <button 
+                        type="submit" 
+                        class="px-8 py-3 bg-stone-100 text-stone-900 font-bold rounded-lg hover:bg-white transition-colors flex items-center justify-center gap-2"
+                    >
+                        <span>Subscribe</span>
+                        <i data-lucide="chevron-right" width="16"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 5: Contact / Footer -->
+    <footer id="contact" class="bg-white pt-24 pb-12 border-t border-stone-100">
+        <div class="container mx-auto px-6 md:px-12">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-20 items-start">
+                
+                <!-- Contact Form -->
+                <div class="bg-stone-50 p-8 md:p-12 rounded-2xl border border-stone-100">
+                    <h3 class="text-3xl font-serif text-stone-900 mb-2">Get in Touch</h3>
+                    <p class="text-stone-500 mb-8 text-sm">For collaborations, speaking inquiries, or just to say hello.</p>
+                    
+                    <form action="https://formspree.io/f/YOUR_FORM_ID" method="POST" class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="space-y-2">
+                                <label class="text-xs font-bold uppercase text-stone-400 tracking-wider">Name</label>
+                                <input type="text" name="name" class="w-full px-4 py-3 bg-white border border-stone-200 rounded-lg focus:border-stone-800 focus:outline-none transition-colors" />
+                            </div>
+                            <div class="space-y-2">
+                                <label class="text-xs font-bold uppercase text-stone-400 tracking-wider">Email</label>
+                                <input type="email" name="email" class="w-full px-4 py-3 bg-white border border-stone-200 rounded-lg focus:border-stone-800 focus:outline-none transition-colors" />
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-xs font-bold uppercase text-stone-400 tracking-wider">Message</label>
+                            <textarea name="message" rows="4" class="w-full px-4 py-3 bg-white border border-stone-200 rounded-lg focus:border-stone-800 focus:outline-none transition-colors"></textarea>
+                        </div>
+                        <button type="submit" class="w-full md:w-auto px-8 py-3 bg-stone-900 text-white font-bold rounded-lg hover:bg-stone-700 transition-colors flex items-center justify-center gap-2">
+                            <span>Send Message</span>
+                            <i data-lucide="send" width="16"></i>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Footer Info -->
+                <div class="flex flex-col h-full justify-between py-4 text-center lg:text-left">
+                    <div class="space-y-8 flex flex-col items-center lg:items-start">
+                        <div>
+                             <h4 class="text-6xl font-serif text-stone-900 tracking-tight mb-2">Yashasvi Aditya</h4>
+                             <p class="text-stone-400 font-light tracking-widest uppercase text-sm">Independent Author</p>
+                        </div>
+                        
+                        <div class="w-16 h-px bg-stone-200"></div>
+
+                        <ul class="flex flex-wrap justify-center lg:justify-start gap-x-8 gap-y-3 text-stone-600 font-medium">
+                            <li><a href="#story" class="hover:text-stone-900 transition-colors">My Story</a></li>
+                            <li><a href="#book" class="hover:text-stone-900 transition-colors">The Book</a></li>
+                            <li><a href="#upcoming" class="hover:text-stone-900 transition-colors">Upcoming</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="mt-16 pt-8 border-t border-stone-100 flex flex-col items-center lg:items-start text-stone-400 text-sm gap-2">
+                        <p class="font-serif italic text-lg text-stone-500 mb-2">"To define is to limit."</p>
+                        <p>&copy; <span id="year"></span> Yashasvi Aditya. All rights reserved.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // Set Current Year
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        // Navbar Logic
+        const mobileBtn = document.getElementById('mobile-menu-btn');
+        const navbarContainer = document.getElementById('navbar-container');
+        const menuIcon = document.getElementById('menu-icon');
+        const navLinks = document.querySelectorAll('.nav-link');
+        let isMenuOpen = false;
+
+        function toggleMenu() {
+            isMenuOpen = !isMenuOpen;
+            if (isMenuOpen) {
+                navbarContainer.classList.remove('-translate-y-full');
+            } else {
+                navbarContainer.classList.add('-translate-y-full');
+            }
+        }
+
+        // Toggle on button click
+        mobileBtn.addEventListener('click', toggleMenu);
+
+        // Close menu when a link is clicked
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth < 768) { // Only on mobile
+                    isMenuOpen = false;
+                    navbarContainer.classList.add('-translate-y-full');
+                }
+            });
+        });
+
+        // Quote Slider Logic
+        const quotes = [
+            { text: "Reading is an act of civilization; it takes the free raw material of the mind and builds castles of possibilities.", author: "Ben Okri" },
+            { text: "We write to taste life twice, in the moment and in retrospect.", author: "Anaïs Nin" },
+            { text: "A story is a way to say who we are without having to open our mouths.", author: "Unknown" },
+            { text: "The invisible threads that connect us are stronger than the visible walls that divide us.", author: "Yashasvi Aditya" }
+        ];
+
+        let currentQuoteIndex = 0;
+        const quoteTextEl = document.getElementById('quote-text');
+        const quoteAuthorEl = document.getElementById('quote-author');
+        const quoteDotsContainer = document.getElementById('quote-dots');
+
+        function renderDots() {
+            quoteDotsContainer.innerHTML = '';
+            quotes.forEach((_, idx) => {
+                const dot = document.createElement('button');
+                dot.className = `h-1 transition-all duration-500 rounded-full ${idx === currentQuoteIndex ? 'w-12 bg-stone-800' : 'w-4 bg-stone-300 hover:bg-stone-400'}`;
+                dot.ariaLabel = `Go to quote ${idx + 1}`;
+                dot.onclick = () => {
+                    currentQuoteIndex = idx;
+                    updateQuoteDisplay();
+                    resetTimer();
+                };
+                quoteDotsContainer.appendChild(dot);
+            });
+        }
+
+        function updateQuoteDisplay() {
+            // Simple fade effect
+            quoteTextEl.style.opacity = '0';
+            quoteAuthorEl.style.opacity = '0';
+            
+            setTimeout(() => {
+                quoteTextEl.textContent = quotes[currentQuoteIndex].text;
+                quoteAuthorEl.textContent = `— ${quotes[currentQuoteIndex].author}`;
+                quoteTextEl.style.opacity = '1';
+                quoteAuthorEl.style.opacity = '1';
+                renderDots();
+            }, 300);
+        }
+
+        function nextQuote() {
+            currentQuoteIndex = (currentQuoteIndex + 1) % quotes.length;
+            updateQuoteDisplay();
+        }
+
+        let quoteTimer = setInterval(nextQuote, 6000);
+
+        function resetTimer() {
+            clearInterval(quoteTimer);
+            quoteTimer = setInterval(nextQuote, 6000);
+        }
+
+        // Initialize Slider
+        renderDots();
+
+    </script>
+</body>
+</html>
